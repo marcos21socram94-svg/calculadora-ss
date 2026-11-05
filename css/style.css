@@ -743,3 +743,14 @@ body.dark-mode .badge-cultura { background-color: #0369a1; color: #7dd3fc; }
         align-items: flex-start;
     }
 }
+/* Botón de peligro para borrar todo */
+.btn-peligro {
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+.btn-peligro:hover {
+    background-color: var(--color-error) !important;
+    color: white !important;
+    border-color: var(--color-error) !important;
+}

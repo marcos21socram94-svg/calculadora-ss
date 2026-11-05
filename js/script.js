@@ -836,3 +836,27 @@ function calcularCuotasVsContado() {
     document.getElementById("valor-presente-cuotas").textContent = "$" + valorPresente.toFixed(2);
     document.getElementById("ahorro-real-cuotas").textContent = "$" + Math.abs(diferenciaReal).toFixed(2);
 }
+// ===============================================
+// 11. BORRAR TODOS LOS DATOS Y CACHÉ
+// ===============================================
+function confirmarBorrarTodo() {
+    const seguro = confirm("¿Estás seguro de que querés borrar todos los registros y el sueldo guardado? Esta acción eliminará todos los datos del dispositivo y no se puede deshacer.");
+    
+    if (seguro) {
+        // Vaciar variables de estado
+        gastos = [];
+        sueldoMensual = 0;
+
+        // Limpiar LocalStorage
+        localStorage.removeItem("gastos-ipap");
+        localStorage.removeItem("sueldo-mensual-app");
+
+        // Limpiar input de sueldo en pantalla si existe
+        if (inputSueldo) inputSueldo.value = "";
+
+        // Refrescar toda la interfaz
+        actualizarVistaCompleta();
+
+        alert("Se han borrado todos los datos y registros correctamente.");
+    }
+}
