@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#059669">
+    <title>Calculadora de Gastos Personales</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ENCABEZADO PRINCIPAL -->
+    <header>
+        <div class="header-content">
+            <h1>CALCULADORA DE GASTOS PERSONALES</h1>
+            <p>Gestión inteligente y consciente de tu economía doméstica</p>
+        </div>
+        <div class="header-actions">
+            <!-- Botón para instalar la App en el celular (aparece automáticamente cuando está disponible) -->
+            <button type="button" id="btn-instalar-pwa" class="btn-instalar oculto" title="Instalar aplicación en el celular">
+                📲 Instalar App
+            </button>
+            <!-- Botón rápido a Cafecito en el encabezado -->
+            <a href="https://cafecito.app/socram_kaladin" target="_blank" rel="noopener noreferrer" class="btn-cafecito-header" title="Apoyar el proyecto con un Cafecito">
+                ☕ Cafecito
+            </a>
+            <!-- Botón para alternar Modo Claro / Modo Oscuro -->
+            <button type="button" id="btn-modo-oscuro" class="btn-tema" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema">🌙</button>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        <!-- NAVEGACIÓN POR PESTAÑAS -->
+        <nav class="tabs-nav">
+            <button type="button" class="tab-btn active" onclick="cambiarPestana('registro')">➕ Registro y Sueldo</button>
+            <button type="button" class="tab-btn" onclick="cambiarPestana('historial')">📜 Historial y Filtros</button>
+            <button type="button" class="tab-btn" onclick="cambiarPestana('comparativa')">📊 Comparativa y %</button>
+            <button type="button" class="tab-btn" onclick="cambiarPestana('cuotas')">💳 ¿Cuotas o Contado?</button>
+        </nav>
+
+        <!-- Catálogo automático de productos generados por el usuario -->
+        <datalist id="lista-productos-usuario"></datalist>
+
+        <!-- =========================================================
+             PESTAÑA 1: SUELDO, REGISTRO Y RESUMEN DEL MES
+        ========================================================== -->
+        <div id="tab-registro" class="tab-content active">
+            
+            <!-- Bloque de Sueldo / Presupuesto y Semáforo -->
+            <section id="seccion-presupuesto">
+                <h2>💰 Mi Ingreso / Presupuesto Mensual</h2>
+                <div class="panel-presupuesto">
+                    <div class="campo">
+                        <label for="input-sueldo">Sueldo o Tope Mensual ($):</label>
+                        <input 
+                            type="number" 
+                            id="input-sueldo" 
+                            placeholder="Ej: 850000" 
+                            min="0" 
+                            step="100"
+                        >
+                    </div>
+                    <button type="button" id="btn-guardar-sueldo" class="btn-primario-corto" onclick="guardarSueldo()">
+                        Guardar Ingreso
+                    </button>
+                </div>
+
+                <!-- Barra de progreso tipo semáforo -->
+                <div id="contenedor-semaforo" class="semaforo-box oculto">
+                    <div class="semaforo-textos">
+                        <span id="texto-estado-presupuesto">Gastado: $0.00 (0%)</span>
+                        <span id="texto-disponible-presupuesto">Disponible: $0.00</span>
+                    </div>
+                    <div class="barra-fondo">
+                        <div id="barra-progreso-sueldo" class="barra-relleno"></div>
+                    </div>
+                    <p id="alerta-ahorro-sueldo" class="subtexto-ahorro"></p>
+                </div>
+            </section>
+
+        <!-- Formulario de Registro de Gastos -->
+            <section id="seccion-formulario">
+                <h2>Registrar un Nuevo Gasto</h2>
+                <form id="form-gasto">
+                    <div class="campo">
+                        <label for="concepto">Concepto / Producto</label>
+                        <input 
+                            type="text" 
+                            id="concepto" 
+                            name="concepto" 
+                            list="lista-productos-usuario"
+                            placeholder="Ej: Aceite de oliva, Alquiler, Comida de súper, Gimnasio..." 
+                            autocomplete="off"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="categoria">Categoría del Gasto</label>
+                        <select id="categoria" name="categoria" required>
+                            <option value="">Elegir categoría...</option>
+                            <option value="Gastos fijos">Gastos fijos (Alquiler, impuestos, servicios)</option>
+                            <option value="Consumos esenciales">Consumos esenciales (Comida, transporte, remedios)</option>
+                            <option value="Bienestar y cuidado">Bienestar y cuidado (Libros, Gym, Deportes)</option>
+                            <option value="Ocio y gustos">Ocio y gustos (golosinas, salidas, boliche)</option>
+                        </select>
+                    </div>
+
+                    <div class="fila-doble">
+                        <div class="campo">
+                            <label for="monto">Monto ($)</label>
+                            <input 
+                                type="number" 
+                                id="monto" 
+                                name="monto" 
+                                placeholder="15000" 
+                                min="0.01" 
+                                step="0.01" 
+                                required
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label for="fecha">Fecha del Gasto</label>
+                            <input type="date" id="fecha" name="fecha" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-agregar">Agregar Gasto</button>
+                    <p id="mensaje-error" class="error"></p>
+                </form>
+            </section>
+
+            <!-- Resumen del Mes Actual con % del Sueldo -->
+            <section id="seccion-resumen">
+                <h2>Resumen del Mes Actual</h2>
+                <div class="resumen-grid">
+                    <div class="card-resumen fijo">
+                        <h3>Gastos fijos</h3>
+                        <p id="total-fijos">$0.00</p>
+                        <small id="porc-fijos" class="porcentaje-sueldo">0% del ingreso</small>
+                    </div>
+                    <div class="card-resumen variable">
+                        <h3>Consumos esenciales</h3>
+                        <p id="total-variables">$0.00</p>
+                        <small id="porc-variables" class="porcentaje-sueldo">0% del ingreso</small>
+                    </div>
+                    <div class="card-resumen ocio">
+                        <h3>Bienestar y cuidado</h3>
+                        <p id="total-ocio">$0.00</p>
+                        <small id="porc-ocio" class="porcentaje-sueldo">0% del ingreso</small>
+                    </div>
+                    <div class="card-resumen cultura">
+                        <h3>Ocio y gustos</h3>
+                        <p id="total-cultura">$0.00</p>
+                        <small id="porc-cultura" class="porcentaje-sueldo">0% del ingreso</small>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- =========================================================
+             PESTAÑA 2: HISTORIAL, FILTROS Y EXPORTACIÓN
+        ========================================================== -->
+        <div id="tab-historial" class="tab-content">
+            <section>
+                <h2>Filtrar Registros y Productos</h2>
+                <div class="panel-filtros">
+                    <div class="campo campo-busqueda">
+                        <label for="filtro-palabra">🔍 Producto / Palabra clave:</label>
+                        <input 
+                            type="search" 
+                            id="filtro-palabra" 
+                            list="lista-productos-usuario"
+                            placeholder="Ej: Aceite de oliva, Alquiler..."
+                            autocomplete="off"
+                            oninput="aplicarFiltros()"
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="filtro-categoria">Categoría:</label>
+                        <select id="filtro-categoria" onchange="aplicarFiltros()">
+                            <option value="TODAS">Todas las categorías</option>
+                            <option value="Gastos fijos">Gastos fijos</option>
+                            <option value="Consumos esenciales">Consumos esenciales</option>
+                            <option value="Bienestar y cuidado">Bienestar y cuidado</option>
+                            <option value="Ocio y gustos">Ocio y gustos</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="filtro-mes">Mes y Año:</label>
+                        <input type="month" id="filtro-mes" onchange="aplicarFiltros()">
+                    </div>
+
+                    <button type="button" class="btn-secundario" id="btn-limpiar-filtros" onclick="limpiarFiltros()">Limpiar</button>
+                </div>
+
+                <!-- Botones rápidos de productos que el usuario ya cargó -->
+                <div class="barra-productos-frecuentes">
+                    <span class="etiqueta-chips">Tus productos frecuentes (clic para comparar evolución):</span>
+                    <div id="contenedor-chips-productos" class="chips-productos"></div>
+                </div>
+            </section>
+
+            <!-- PANEL COMPARATIVO DEL PRODUCTO BUSCADO -->
+            <section id="panel-analisis-producto" class="panel-producto oculto">
+                <div class="encabezado-analisis">
+                    <h2>📈 Seguimiento: <span id="titulo-producto-filtrado"></span></h2>
+                    <span id="badge-variacion-producto" class="badge-tendencia"></span>
+                </div>
+                <div class="resumen-grid">
+                    <div class="card-resumen producto-total">
+                        <h3>Gasto Acumulado</h3>
+                        <p id="prod-gasto-total">$0.00</p>
+                    </div>
+                    <div class="card-resumen fijo">
+                        <h3>Veces Registrado</h3>
+                        <p id="prod-cantidad-compras">0</p>
+                    </div>
+                    <div class="card-resumen variable">
+                        <h3>Valor Promedio</h3>
+                        <p id="prod-precio-promedio">$0.00</p>
+                    </div>
+                    <div class="card-resumen ocio">
+                        <h3>1º vs. Último Registro</h3>
+                        <p id="prod-comparacion-extremos">-</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccion-lista">
+                <div class="cabecera-lista">
+                    <h2>Historial de Gastos</h2>
+                    <div class="acciones-datos">
+                        <button type="button" class="btn-accion-dato" onclick="exportarCSV()" title="Descargar tabla actual en Excel (CSV)">
+                            📥 Exportar Excel
+                        </button>
+                        <button type="button" class="btn-accion-dato" onclick="descargarBackup()" title="Guardar copia de seguridad en tu dispositivo">
+                            💾 Backup
+                        </button>
+                        <label for="input-importar-json" class="btn-accion-dato label-importar" title="Restaurar copia de seguridad">
+                            📂 Importar
+                        </label>
+                        <input type="file" id="input-importar-json" accept=".json" class="oculto" onchange="importarBackup(event)">
+                    </div>
+                </div>
+
+                <div class="tabla-responsive">
+                    <table id="tabla-gastos"> 
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Categoría</th>
+                                <th class="texto-derecha">Monto</th>
+                                <th class="texto-centro">Variación*</th>
+                                <th class="texto-centro">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla">
+                            <!-- Filas generadas dinámicamente con JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pie-tabla"> 
+                    <p id="total-filtrado">Total filtrado: $0.00</p>
+                    <p id="alerta-recorte" class="subtexto-alerta"></p>
+                    <small class="nota-variacion">*Compara el precio con la compra inmediata anterior del mismo producto o concepto.</small>
+                </div>
+            </section>
+        </div>
+
+        <!-- =========================================================
+             PESTAÑA 3: COMPARATIVA DE INFLACIÓN ANUAL Y MES A MES
+        ========================================================== -->
+        <div id="tab-comparativa" class="tab-content">
+            <!-- Nuevo Comparador Porcentual entre dos Meses / Anual -->
+            <section>
+                <h2>📈 Calculadora de Variación e Inflación Personal</h2>
+                <p class="subtexto-alerta" style="margin-bottom: 15px;">
+                    Compará dos meses (por ejemplo, enero contra hoy) para saber qué porcentaje subió el alquiler, el gimnasio, un producto puntual o tu gasto en ocio.
+                </p>
+
+                <div class="panel-filtros">
+                    <div class="campo">
+                        <label for="comp-mes-base">Mes Base (Anterior):</label>
+                        <input type="month" id="comp-mes-base" onchange="calcularComparativaPorcentual()">
+                    </div>
+
+                    <div class="campo">
+                        <label for="comp-mes-actual">Mes a Comparar:</label>
+                        <input type="month" id="comp-mes-actual" onchange="calcularComparativaPorcentual()">
+                    </div>
+
+                    <div class="campo">
+                        <label for="comp-rubro">Rubro o Categoría:</label>
+                        <select id="comp-rubro" onchange="calcularComparativaPorcentual()">
+                            <option value="">Elegir categoría...</option>
+                            <option value="Gastos fijos">Gastos fijos</option>
+                            <option value="Consumos esenciales">Consumos esenciales</option>
+                            <option value="Bienestar y cuidado">Bienestar y cuidado</option>
+                            <option value="Ocio y gustos">Ocio y gustos</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="comp-palabra">Producto / Gasto puntual (opcional):</label>
+                        <input 
+                            type="search" 
+                            id="comp-palabra" 
+                            list="lista-productos-usuario"
+                            placeholder="Ej: Alquiler, Gimnasio, Aceite..."
+                            autocomplete="off"
+                            oninput="calcularComparativaPorcentual()"
+                        >
+                    </div>
+                </div>
+
+                <!-- Resultado de la Comparación Porcentual -->
+                <div class="resumen-grid" style="margin-top: 16px;">
+                    <div class="card-resumen cultura">
+                        <h3 id="titulo-comp-base">Mes Base</h3>
+                        <p id="monto-comp-base">$0.00</p>
+                    </div>
+                    <div class="card-resumen variable">
+                        <h3 id="titulo-comp-actual">Mes Comparado</h3>
+                        <p id="monto-comp-actual">$0.00</p>
+                    </div>
+                    <div class="card-resumen fijo">
+                        <h3>Diferencia en Pesos</h3>
+                        <p id="monto-comp-diferencia">$0.00</p>
+                    </div>
+                    <div class="card-resumen ocio">
+                        <h3>Variación Porcentual</h3>
+                        <p id="porc-comp-variacion">0%</p>
+                    </div>
+                </div>
+                <p id="conclusion-comparativa" class="conclusion-box"></p>
+            </section>
+
+            <!-- Historial agrupado Mes a Mes -->
+            <section>
+                <h2>Resumen Histórico Mes a Mes</h2>
+                <div class="panel-filtros" style="margin-bottom: 20px;">
+                    <div class="campo">
+                        <label for="filtro-comparativa-producto">🔍 Filtrar tarjetas mensuales por producto (opcional):</label>
+                        <input 
+                            type="search" 
+                            id="filtro-comparativa-producto" 
+                            list="lista-productos-usuario"
+                            placeholder="Ej: Aceite de oliva (vacío = muestra todo el mes)"
+                            autocomplete="off"
+                            oninput="actualizarComparativa()"
+                        >
+                    </div>
+                    <button type="button" class="btn-secundario" onclick="limpiarFiltroComparativa()">Ver Todo</button>
+                </div>
+
+                <div id="contenedor-comparativa"></div>
+            </section>
+        </div>
+
+        <!-- =========================================================
+             PESTAÑA 4: CALCULADORA ¿CUOTAS O CONTADO?
+        ========================================================== -->
+        <div id="tab-cuotas" class="tab-content">
+            <section>
+                <h2>💳 Analizador: ¿Conviene en Cuotas o al Contado?</h2>
+                <p class="subtexto-alerta" style="margin-bottom: 15px;">
+                    Calculá si el interés de las cuotas le gana o pierde frente a la inflación / rendimiento mensual de tu dinero.
+                </p>
+
+                <div class="fila-doble">
+                    <div class="campo">
+                        <label for="cuotas-contado">Precio de Contado / Efectivo ($):</label>
+                        <input type="number" id="cuotas-contado" placeholder="Ej: 100000" min="1" step="0.01" oninput="calcularCuotasVsContado()">
+                    </div>
+
+                    <div class="campo">
+                        <label for="cuotas-total">Precio Total Final en Cuotas ($):</label>
+                        <input type="number" id="cuotas-total" placeholder="Ej: 135000" min="1" step="0.01" oninput="calcularCuotasVsContado()">
+                    </div>
+                </div>
+
+                <div class="fila-doble" style="margin-top: 12px;">
+                    <div class="campo">
+                        <label for="cuotas-cantidad">Cantidad de Cuotas:</label>
+                        <select id="cuotas-cantidad" onchange="calcularCuotasVsContado()">
+                            <option value="3">3 cuotas</option>
+                            <option value="6" selected>6 cuotas</option>
+                            <option value="9">9 cuotas</option>
+                            <option value="12">12 cuotas</option>
+                            <option value="18">18 cuotas</option>
+                            <option value="24">24 cuotas</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="cuotas-inflacion">Inflación / Rendimiento mensual estimado (%):</label>
+                        <input type="number" id="cuotas-inflacion" value="4" min="0" max="100" step="0.1" oninput="calcularCuotasVsContado()">
+                    </div>
+                </div>
+
+                <div id="resultado-cuotas-box" class="panel-producto oculto" style="margin-top: 20px; padding: 16px; border-radius: 8px;">
+                    <h3 id="veredicto-cuotas" style="font-size: 1.2rem; margin-bottom: 10px;"></h3>
+                    <div class="resumen-grid">
+                        <div class="card-resumen fijo">
+                            <h3>Valor de cada cuota</h3>
+                            <p id="valor-cada-cuota">$0.00</p>
+                        </div>
+                        <div class="card-resumen variable">
+                            <h3>Recargo nominal</h3>
+                            <p id="recargo-nominal-cuotas">0%</p>
+                        </div>
+                        <div class="card-resumen producto-total">
+                            <h3>Cuotas a valor de hoy</h3>
+                            <p id="valor-presente-cuotas">$0.00</p>
+                        </div>
+                        <div class="card-resumen ocio">
+                            <h3>Ahorro real estimado</h3>
+                            <p id="ahorro-real-cuotas">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA COMERCIAL Y DE DONACIONES -->
+    <footer class="footer-comercial">
+        <div class="tarjeta-donacion">
+            <h3>¿Esta herramienta te ayuda a organizar tu economía y ahorrar?</h3>
+            <p>Esta aplicación es 100% gratuita, sin publicidades molestas y tus datos se guardan de forma privada en tu dispositivo.</p>
+            <a href="https://cafecito.app/socram_kaladin" target="_blank" rel="noopener noreferrer" class="btn-cafecito-footer">
+                ☕ Invitame un Cafecito para seguir mejorando la App
+            </a>
+        </div>
+        <p class="copyright-texto">Calculadora de Gastos Personales &bull; Finanzas Conscientes</p>
+    </footer>
+
+    <!-- Enlace al archivo JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+</html>

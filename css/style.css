@@ -1,0 +1,745 @@
+/* ===== 1. VARIABLES GLOBALES Y RESETEO (MODO CLARO) ===== */
+:root {
+    --color-principal: #059669; /* Verde esmeralda moderno tipo Fintech */
+    --color-secundario: #047857;
+    --color-fondo: #f8fafc;     
+    --color-texto: #1e293b;     
+    --color-error: #ef4444;
+    --color-tarjeta: #ffffff;
+
+    /* Semántica de Categorías Financieras Intuitivas */
+    --color-fijo: #dc2626;      /* Rojo alerta: Gastos fijos */
+    --color-variable: #d97706;  /* Ámbar: Consumos esenciales */
+    --color-ocio: #7c3aed;      /* Violeta: Bienestar y cuidado */
+    --color-cultura: #0284c7;   /* Azul: Ocio y gustos */
+
+    --fuente: system-ui, -apple-system, Arial, Helvetica, sans-serif;
+}
+
+/* ===== 2. MODO OSCURO ===== */
+body.dark-mode {
+    --color-fondo: #0f172a;     
+    --color-texto: #f1f5f9;     
+    --color-tarjeta: #1e293b;   
+    --color-principal: #10b981; 
+    --color-secundario: #059669;
+    --color-error: #f87171;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--fuente);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.5;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.oculto {
+    display: none !important;
+}
+
+/* ===== 3. ENCABEZADO Y ACCIONES RÁPIDAS ===== */
+header {
+    background-color: var(--color-principal);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    transition: background-color 0.3s ease;
+}
+
+.header-content {
+    flex: 1;
+    min-width: 240px;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+    letter-spacing: 0.4px;
+}
+
+header p {
+    font-size: 0.9rem;
+    opacity: 0.92;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-instalar,
+.btn-cafecito-header {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-instalar:hover,
+.btn-cafecito-header:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-tema {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-tema:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+}
+
+main {
+    max-width: 920px;
+    margin: 22px auto;
+    padding: 0 16px;
+}
+
+/* ===== 4. NAVEGACIÓN POR PESTAÑAS ===== */
+.tabs-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+body.dark-mode .tabs-nav {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+    background-color: #e2e8f0;
+    border: none;
+    padding: 10px 16px;
+    font-size: 0.92rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    color: #475569;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+body.dark-mode .tab-btn {
+    background-color: #334155;
+    color: #94a3b8;
+}
+
+.tab-btn.active {
+    background-color: var(--color-principal);
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ===== 5. SECCIONES, FORMULARIOS Y SUELDO ===== */
+section {
+    background-color: var(--color-tarjeta);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+section h2 {
+    color: var(--color-principal);
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--color-fondo);
+    padding-bottom: 8px;
+}
+
+.panel-presupuesto {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.panel-presupuesto .campo {
+    flex: 1;
+    min-width: 220px;
+}
+
+.btn-primario-corto {
+    background-color: var(--color-principal);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    height: 42px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primario-corto:hover {
+    background-color: var(--color-secundario);
+}
+
+/* Semáforo de Sueldo / Presupuesto */
+.semaforo-box {
+    margin-top: 16px;
+    padding: 14px;
+    background-color: var(--color-fondo);
+    border-radius: 8px;
+}
+
+.semaforo-textos {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.barra-fondo {
+    width: 100%;
+    height: 14px;
+    background-color: #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.dark-mode .barra-fondo {
+    background-color: #334155;
+}
+
+.barra-relleno {
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-principal);
+    transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+.barra-relleno.alerta-media {
+    background-color: var(--color-variable);
+}
+
+.barra-relleno.alerta-alta {
+    background-color: var(--color-fijo);
+}
+
+.subtexto-ahorro {
+    margin-top: 8px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-principal);
+}
+
+/* Formulario y Filtros */
+#form-gasto,
+.panel-filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.panel-filtros {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.panel-filtros .campo {
+    flex: 1;
+    min-width: 165px;
+    margin-bottom: 0;
+}
+
+.panel-filtros .campo-busqueda {
+    flex: 1.4;
+    min-width: 210px;
+}
+
+.fila-doble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 0.88rem;
+}
+
+.campo input,
+.campo select {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: var(--color-tarjeta);
+    color: var(--color-texto);
+}
+
+body.dark-mode .campo input,
+body.dark-mode .campo select {
+    border-color: #475569;
+    background-color: #1e293b;
+    color: #fff;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: 2px solid var(--color-principal);
+    border-color: transparent;
+}
+
+button[type="submit"],
+.btn-secundario {
+    background-color: var(--color-principal);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover,
+.btn-secundario:hover {
+    background-color: var(--color-secundario);
+}
+
+.btn-secundario {
+    background-color: #64748b;
+    height: 41px;
+    padding: 0 16px;
+    font-size: 0.9rem;
+}
+
+.error {
+    color: var(--color-error);
+    margin-top: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* ===== 6. CHIPS DE PRODUCTOS Y PANEL DE ANÁLISIS ===== */
+.barra-productos-frecuentes {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(100, 116, 139, 0.3);
+}
+
+.etiqueta-chips {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: bold;
+    opacity: 0.8;
+    margin-bottom: 8px;
+}
+
+.chips-productos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip-producto {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body.dark-mode .chip-producto {
+    border-color: #475569;
+}
+
+.chip-producto:hover,
+.chip-producto.activo {
+    background-color: var(--color-principal);
+    color: white;
+    border-color: var(--color-principal);
+}
+
+.panel-producto {
+    border: 2px solid var(--color-principal);
+}
+
+.encabezado-analisis {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--color-fondo);
+    padding-bottom: 8px;
+}
+
+.encabezado-analisis h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.badge-tendencia {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    background-color: var(--color-fondo);
+}
+
+/* ===== 7. RESUMEN Y TARJETAS ===== */
+.resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.card-resumen {  
+    background-color: var(--color-fondo);
+    border-left: 5px solid #ccc;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.card-resumen h3 {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-bottom: 6px;
+}
+
+.card-resumen p {
+    font-size: 1.15rem;
+    font-weight: bold;
+}
+
+.porcentaje-sueldo {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    opacity: 0.75;
+    font-weight: 600;
+}
+
+.card-resumen.fijo { border-left-color: var(--color-fijo); }
+.card-resumen.variable { border-left-color: var(--color-variable); }
+.card-resumen.ocio { border-left-color: var(--color-ocio); }
+.card-resumen.cultura { border-left-color: var(--color-cultura); }
+.card-resumen.producto-total { border-left-color: var(--color-principal); }
+
+/* ===== 8. TABLAS, HISTORIAL Y BOTONES DE BACKUP/EXCEL ===== */
+.cabecera-lista {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--color-fondo);
+    padding-bottom: 8px;
+}
+
+.cabecera-lista h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.acciones-datos {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-accion-dato {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    border: 1px solid #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body.dark-mode .btn-accion-dato {
+    border-color: #475569;
+}
+
+.btn-accion-dato:hover {
+    background-color: var(--color-principal);
+    color: white;
+    border-color: var(--color-principal);
+}
+
+.label-importar {
+    display: inline-flex;
+    align-items: center;
+}
+
+.tabla-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+th, td {
+    text-align: left;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 0.9rem;
+}
+
+body.dark-mode th,
+body.dark-mode td {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+th {
+    background-color: var(--color-fondo);
+    font-weight: bold;
+}
+
+.texto-derecha { text-align: right; }
+.texto-centro { text-align: center; }
+
+/* BADGES DE CATEGORÍA */
+.badge { 
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.80rem;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.badge-fijo { background-color: #fee2e2; color: #991b1b; }      
+.badge-variable { background-color: #fef3c7; color: #92400e; }  
+.badge-ocio { background-color: #ede9fe; color: #5b21b6; }      
+.badge-cultura { background-color: #e0f2fe; color: #0369a1; }   
+
+body.dark-mode .badge-fijo { background-color: #7f1d1d; color: #fca5a5; }
+body.dark-mode .badge-variable { background-color: #78350f; color: #fde68a; }
+body.dark-mode .badge-ocio { background-color: #4c1d95; color: #c4b5fd; }
+body.dark-mode .badge-cultura { background-color: #0369a1; color: #7dd3fc; }
+
+/* Variación de precio por producto */
+.var-sube { color: var(--color-fijo); font-weight: bold; font-size: 0.82rem; }
+.var-baja { color: var(--color-principal); font-weight: bold; font-size: 0.82rem; }
+.var-igual { opacity: 0.65; font-size: 0.8rem; }
+
+.boton-eliminar {
+    background: none;
+    border: none;
+    color: var(--color-error);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 8px;
+}
+
+.boton-eliminar:hover { opacity: 0.5; }
+
+.pie-tabla {
+    text-align: right;
+    border-top: 2px solid var(--color-fondo);
+    padding: 12px;
+}
+
+#total-filtrado {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--color-principal);
+}
+
+.subtexto-alerta { 
+    font-size: 0.86rem;
+    color: var(--color-ocio);
+    margin-top: 4px;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.nota-variacion {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+/* ===== 9. TARJETAS DE COMPARATIVA Y CONCLUSIÓN ===== */
+.conclusion-box {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: var(--color-fondo);
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-left: 4px solid var(--color-principal);
+}
+
+.card-comparativa {
+    background-color: var(--color-fondo);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-left: 6px solid var(--color-principal);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-comparativa h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--color-principal);
+}
+
+.grid-resumen-mes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.texto-fijo { color: var(--color-fijo); }
+.texto-variable { color: var(--color-variable); }
+.texto-ocio { color: var(--color-ocio); }
+.texto-cultura { color: var(--color-cultura); }
+
+/* ===== 10. PIE DE PÁGINA COMERCIAL Y CAFECITO ===== */
+.footer-comercial {
+    max-width: 920px;
+    margin: 30px auto 20px;
+    padding: 0 16px;
+    text-align: center;
+}
+
+.tarjeta-donacion {
+    background-color: var(--color-tarjeta);
+    border: 2px solid var(--color-principal);
+    border-radius: 12px;
+    padding: 22px 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+}
+
+.tarjeta-donacion h3 {
+    color: var(--color-principal);
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+}
+
+.tarjeta-donacion p {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    margin-bottom: 14px;
+}
+
+.btn-cafecito-footer {
+    display: inline-block;
+    background-color: var(--color-principal);
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.96rem;
+    padding: 12px 24px;
+    border-radius: 25px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(5, 150, 105, 0.25);
+}
+
+.btn-cafecito-footer:hover {
+    background-color: var(--color-secundario);
+    transform: translateY(-2px);
+}
+
+.copyright-texto {
+    font-size: 0.8rem;
+    opacity: 0.65;
+    padding-bottom: 10px;
+}
+
+/* ===== 11. RESPONSIVE MÓVIL ===== */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .header-actions {
+        justify-content: center;
+    }
+    .fila-doble {
+        grid-template-columns: 1fr;
+    }
+    .resumen-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .panel-filtros,
+    .panel-presupuesto {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .cabecera-lista {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
