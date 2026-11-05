@@ -80,7 +80,7 @@
                 </div>
             </section>
 
-        <!-- Formulario de Registro de Gastos -->
+            <!-- Formulario de Registro de Gastos -->
             <section id="seccion-formulario">
                 <h2>Registrar un Nuevo Gasto</h2>
                 <form id="form-gasto">
@@ -204,49 +204,6 @@
                     <span class="etiqueta-chips">Tus productos frecuentes (clic para comparar evolución):</span>
                     <div id="contenedor-chips-productos" class="chips-productos"></div>
                 </div>
-            </section><!-- =========================================================
-             PESTAÑA 2: HISTORIAL, FILTROS Y EXPORTACIÓN
-        ========================================================== -->
-        <div id="tab-historial" class="tab-content">
-            <section>
-                <h2>Filtrar Registros y Productos</h2>
-                <div class="panel-filtros">
-                    <div class="campo campo-busqueda">
-                        <label for="filtro-palabra">🔍 Producto / Palabra clave:</label>
-                        <input 
-                            type="search" 
-                            id="filtro-palabra" 
-                            list="lista-productos-usuario"
-                            placeholder="Ej: Aceite de oliva, Alquiler..."
-                            autocomplete="off"
-                            oninput="aplicarFiltros()"
-                        >
-                    </div>
-
-                    <div class="campo">
-                        <label for="filtro-categoria">Categoría:</label>
-                        <select id="filtro-categoria" onchange="aplicarFiltros()">
-                            <option value="TODAS">Todas las categorías</option>
-                            <option value="Gastos fijos">Gastos fijos</option>
-                            <option value="Consumos esenciales">Consumos esenciales</option>
-                            <option value="Bienestar y cuidado">Bienestar y cuidado</option>
-                            <option value="Ocio y gustos">Ocio y gustos</option>
-                        </select>
-                    </div>
-
-                    <div class="campo">
-                        <label for="filtro-mes">Mes y Año:</label>
-                        <input type="month" id="filtro-mes" onchange="aplicarFiltros()">
-                    </div>
-
-                    <button type="button" class="btn-secundario" id="btn-limpiar-filtros" onclick="limpiarFiltros()">Limpiar</button>
-                </div>
-
-                <!-- Botones rápidos de productos que el usuario ya cargó -->
-                <div class="barra-productos-frecuentes">
-                    <span class="etiqueta-chips">Tus productos frecuentes (clic para comparar evolución):</span>
-                    <div id="contenedor-chips-productos" class="chips-productos"></div>
-                </div>
             </section>
 
             <!-- PANEL COMPARATIVO DEL PRODUCTO BUSCADO -->
@@ -290,7 +247,7 @@
                         </label>
                         <input type="file" id="input-importar-json" accept=".json" class="oculto" onchange="importarBackup(event)">
                         
-                        <!-- NUEVO BOTÓN DE BORRAR TODO CON ALERTA -->
+                        <!-- Botón de Borrar Todo -->
                         <button type="button" class="btn-accion-dato btn-peligro" onclick="confirmarBorrarTodo()" title="Eliminar todos los registros y datos">
                             ⚠️ Borrar Todo
                         </button>
